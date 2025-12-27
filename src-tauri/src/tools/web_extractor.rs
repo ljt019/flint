@@ -12,25 +12,40 @@ pub async fn web_extractor(url: String) -> Result<String, String> {
     };
 
     // Fetch HTML with timeout
-    let client = reqwest::Client::builder()
+    let client = match reqwest::Client::builder()
         .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
         .timeout(std::time::Duration::from_secs(15))
         .build()
-        .map_err(|e| e.to_string())?;
+    {
+        Ok(c) => c,
+        Err(e) => return Ok(format!("Error: Failed to create HTTP client: {}", e)),
+    };
 
-    let html = client
-        .get(&url)
-        .send()
-        .await
-        .map_err(|e| e.to_string())?
-        .text()
-        .await
-        .map_err(|e| e.to_string())?;
+    let response = match client.get(&url).send().await {
+        Ok(r) => r,
+        Err(e) => return Ok(format!("Error: Failed to fetch URL: {}", e)),
+    };
+
+    let status = response.status();
+    if !status.is_success() {
+        return Ok(format!("Error: HTTP {} for {}", status.as_u16(), url));
+    }
+
+    let html = match response.text().await {
+        Ok(h) => h,
+        Err(e) => return Ok(format!("Error: Failed to read response: {}", e)),
+    };
 
     // Extract content using readability
-    let url_parsed = reqwest::Url::parse(&url).map_err(|e| e.to_string())?;
-    let product =
-        extractor::extract(&mut html.as_bytes(), &url_parsed).map_err(|e| e.to_string())?;
+    let url_parsed = match reqwest::Url::parse(&url) {
+        Ok(u) => u,
+        Err(e) => return Ok(format!("Error: Invalid URL: {}", e)),
+    };
+
+    let product = match extractor::extract(&mut html.as_bytes(), &url_parsed) {
+        Ok(p) => p,
+        Err(e) => return Ok(format!("Error: Failed to extract content: {}", e)),
+    };
 
     let mut content = String::new();
 
@@ -47,7 +62,7 @@ pub async fn web_extractor(url: String) -> Result<String, String> {
     }
 
     if content.trim().is_empty() {
-        return Err("Could not extract content from URL".to_string());
+        return Ok("Error: Could not extract readable content from URL".to_string());
     }
 
     Ok(content)

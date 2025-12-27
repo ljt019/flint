@@ -55,13 +55,13 @@ pub async fn execute_python(code: String) -> Result<String, String> {
                     Err(exc) => {
                         // Get exception type name and try to get message
                         let exc_name = exc.class().name().to_string();
-                        Err(format!("Runtime error: {}", exc_name))
+                        Ok(format!("Runtime error: {}", exc_name))
                     }
                 },
-                Err(err) => Err(format!("Syntax error: {}", err)),
+                Err(err) => Ok(format!("Syntax error: {}", err)),
             }
         })
     })
     .await
-    .map_err(|e| e.to_string())?
+    .unwrap_or_else(|e| Ok(format!("Error: Failed to execute Python: {}", e)))
 }

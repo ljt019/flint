@@ -242,7 +242,11 @@ function ToolCallBlock({
         >
           {hasResult && !collapsed && (
             <div className="text-xs text-muted-foreground/70 font-mono whitespace-pre-wrap mt-1">
-              {result?.trim().replace(/^```\n?/, "").replace(/\n?```$/, "").trim()}
+              {result
+                ?.trim()
+                .replace(/^```\n?/, "")
+                .replace(/\n?```$/, "")
+                .trim()}
             </div>
           )}
         </ChainItem>
@@ -403,7 +407,9 @@ function Markdown({ children }: { children: string }) {
   // Restore preserved blocks
   // eslint-disable-next-line no-control-regex
   content = content.replace(/\u0000PRESERVE(\d+)\u0000/g, (_, i) => {
-    const block = preserved[parseInt(i)];
+    let block = preserved[parseInt(i)];
+    // Convert literal \n to actual newlines inside preserved blocks too
+    block = block.replace(/\\n/g, "\n");
     // Fix code fence language issue in restored code blocks
     if (block.startsWith("```")) {
       return block.replace(/```(\w+)/g, (match, lang) => {

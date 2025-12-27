@@ -9,27 +9,32 @@ pub async fn web_search(query: String) -> Result<String, String> {
         urlencoding::encode(&query)
     );
 
-    let client = reqwest::Client::builder()
+    let client = match reqwest::Client::builder()
         .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
         .timeout(std::time::Duration::from_secs(15))
         .build()
-        .map_err(|e| e.to_string())?;
+    {
+        Ok(c) => c,
+        Err(e) => return Ok(format!("Error: Failed to create HTTP client: {}", e)),
+    };
 
-    let html = client
-        .get(&url)
-        .send()
-        .await
-        .map_err(|e| e.to_string())?
-        .text()
-        .await
-        .map_err(|e| e.to_string())?;
+    let response = match client.get(&url).send().await {
+        Ok(r) => r,
+        Err(e) => return Ok(format!("Error: Search request failed: {}", e)),
+    };
+
+    let html = match response.text().await {
+        Ok(h) => h,
+        Err(e) => return Ok(format!("Error: Failed to read search results: {}", e)),
+    };
 
     let doc = Html::parse_document(&html);
 
-    let result_selector = Selector::parse(".results_links").map_err(|e| e.to_string())?;
-    let title_selector = Selector::parse(".result__a").map_err(|e| e.to_string())?;
-    let snippet_selector = Selector::parse(".result__snippet").map_err(|e| e.to_string())?;
-    let url_selector = Selector::parse(".result__url").map_err(|e| e.to_string())?;
+    // These selectors are hardcoded and valid, unwrap is safe
+    let result_selector = Selector::parse(".results_links").unwrap();
+    let title_selector = Selector::parse(".result__a").unwrap();
+    let snippet_selector = Selector::parse(".result__snippet").unwrap();
+    let url_selector = Selector::parse(".result__url").unwrap();
 
     let mut results = Vec::new();
 

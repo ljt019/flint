@@ -615,9 +615,9 @@ dependencies = [
 
 [[package]]
 name = "candle-pipelines"
-version = "0.0.3"
+version = "0.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8447819f490d5cdc1747f46ccdf919f3fa3157116701ca1bfde87ebaf7dbfb51"
+checksum = "b9f343fff2345bd7be41c8ad03ee1f55eebb93d91e9e05093895b29734a761c6"
 dependencies = [
  "aho-corasick",
  "async-stream",
