@@ -717,28 +717,28 @@ function App() {
         <div className="flex items-center text-muted-foreground z-10">
           <button
             onClick={() => getCurrentWindow().minimize()}
-            className="px-4 py-1.5 hover:bg-muted/50 transition-colors"
+            className="w-12 h-9 flex items-center justify-center hover:bg-muted/50 transition-colors"
             title="Minimize"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
               <path fill="currentColor" d="M19 13H5v-2h14z" />
             </svg>
           </button>
           <button
             onClick={() => getCurrentWindow().toggleMaximize()}
-            className="px-4 py-1.5 hover:bg-muted/50 transition-colors"
+            className="w-12 h-9 flex items-center justify-center hover:bg-muted/50 transition-colors"
             title="Maximize"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
               <path fill="currentColor" d="M4 4h16v16H4zm2 4v10h12V8z" />
             </svg>
           </button>
           <button
             onClick={() => getCurrentWindow().close()}
-            className="px-4 py-1.5 hover:bg-destructive hover:text-destructive-foreground transition-colors"
+            className="w-12 h-9 flex items-center justify-center hover:bg-destructive hover:text-destructive-foreground transition-colors"
             title="Close"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
                 d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"
