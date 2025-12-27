@@ -1,5 +1,5 @@
 use candle_pipelines::text_generation::tool;
-use rustpython::vm::{self, AsObject};
+use rustpython::vm::{self, AsObject, Settings};
 use rustpython_stdlib;
 
 #[tool]
@@ -8,7 +8,11 @@ pub async fn execute_python(code: String) -> Result<String, String> {
     println!("Python code to execute:\n{}", code);
     // Run in blocking task since RustPython is synchronous
     tauri::async_runtime::spawn_blocking(move || -> Result<String, String> {
-        vm::Interpreter::with_init(Default::default(), |vm| {
+        let mut settings = Settings::default();
+        // Add empty path to allow imports to work
+        settings.path_list.push("".to_owned());
+        
+        vm::Interpreter::with_init(settings, |vm| {
             vm.add_native_modules(rustpython_stdlib::get_module_inits());
         })
         .enter(|vm| {

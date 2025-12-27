@@ -296,9 +296,8 @@ function ToolCallBlock({
     );
   }
 
-  if (name === "run_python") {
+  if (name === "execute_python") {
     const code = String(args.code || "");
-    const preview = code.split("\n")[0].slice(0, 50) + (code.length > 50 ? "…" : "");
     return (
       <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
         <ChainItem
@@ -316,10 +315,10 @@ function ToolCallBlock({
           }
           label={
             hasResult ? (
-              <span className="text-xs text-muted-foreground font-mono">{preview}</span>
+              <span className="text-xs text-muted-foreground">Python</span>
             ) : (
-              <span className="text-xs bg-linear-to-r from-muted-foreground via-foreground to-muted-foreground bg-size-[200%_100%] bg-clip-text text-transparent animate-[shimmer_2s_infinite] font-mono">
-                {preview}
+              <span className="text-xs bg-linear-to-r from-muted-foreground via-foreground to-muted-foreground bg-size-[200%_100%] bg-clip-text text-transparent animate-[shimmer_2s_infinite]">
+                Python
               </span>
             )
           }
@@ -327,8 +326,19 @@ function ToolCallBlock({
           iconHoverable={hasResult}
         >
           {hasResult && !collapsed && (
-            <div className="text-xs text-muted-foreground/70 font-mono whitespace-pre-wrap mt-1">
-              {result}
+            <div className="mt-2 space-y-2">
+              <div>
+                <div className="text-xs text-muted-foreground/50 mb-1">Input</div>
+                <div className="text-xs text-muted-foreground/70 font-mono whitespace-pre-wrap bg-muted/30 rounded p-2">
+                  {code}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground/50 mb-1">Output</div>
+                <div className="text-xs text-muted-foreground/70 font-mono whitespace-pre-wrap bg-muted/30 rounded p-2">
+                  {result}
+                </div>
+              </div>
             </div>
           )}
         </ChainItem>
